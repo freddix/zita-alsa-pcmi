@@ -1,0 +1,70 @@
+diff -aurN zita-alsa-pcmi-0.2.0.orig/apps/Makefile zita-alsa-pcmi-0.2.0/apps/Makefile
+--- zita-alsa-pcmi-0.2.0.orig/apps/Makefile	2012-11-18 19:35:02.661056219 +0100
++++ zita-alsa-pcmi-0.2.0/apps/Makefile	2012-11-18 19:39:48.668522729 +0100
+@@ -19,7 +19,7 @@
+ # ----------------------------------------------------------------------------
+ 
+ 
+-PREFIX = /usr/local
++PREFIX = /usr
+ SUFFIX := $(shell uname -m | sed -e 's/^unknown/$//' -e 's/^i.86/$//' -e 's/^x86_64/$/64/')
+ LIBDIR = lib$(SUFFIX)
+ VERSION = "0.1.0"
+@@ -34,7 +34,7 @@
+ ALSA_LOOPBACK_O =	alsa_loopback.o pxthread.o
+ alsa_loopback:	LDLIBS += -lzita-alsa-pcmi -lasound -lpthread -lrt
+ alsa_loopback:	$(ALSA_LOOPBACK_O)
+-	g++ $(LDFLAGS) -o $@ $(ALSA_LOOPBACK_O) $(LDLIBS)
++	$(CXX) $(LDFLAGS) -o $@ $(ALSA_LOOPBACK_O) $(LDLIBS)
+ $(ALSA_LOOPBACK_O):
+ -include $(_ALSA_LOOPBACK_O:%.o=%.d)
+ 
+@@ -42,7 +42,7 @@
+ ALSA_DELAY_O =	alsa_delay.o mtdm.o pxthread.o
+ alsa_delay:	LDLIBS += -lzita-alsa-pcmi -lasound -lpthread -lrt
+ alsa_delay:	$(ALSA_DELAY_O)
+-	g++ $(LDFLAGS) -o $@ $(ALSA_DELAY_O) $(LDLIBS)
++	$(CXX) $(LDFLAGS) -o $@ $(ALSA_DELAY_O) $(LDLIBS)
+ $(ALSA_DELAY_O):
+ -include $(ALSA_DELAY_O:%.o=%.d)
+ 
+diff -aurN zita-alsa-pcmi-0.2.0.orig/libs/Makefile zita-alsa-pcmi-0.2.0/libs/Makefile
+--- zita-alsa-pcmi-0.2.0.orig/libs/Makefile	2012-11-18 19:35:02.661056219 +0100
++++ zita-alsa-pcmi-0.2.0/libs/Makefile	2012-11-18 19:38:11.736894439 +0100
+@@ -20,7 +20,7 @@
+ 
+ # Modify as required.
+ #
+-PREFIX = /usr/local
++PREFIX = /usr
+ SUFFIX := $(shell uname -m | sed -e 's/^unknown/$//' -e 's/^i.86/$//' -e 's/^x86_64/$/64/')
+ LIBDIR = lib$(SUFFIX)
+ 
+@@ -31,7 +31,7 @@
+ 
+ 
+ CPPFLAGS += -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS
+-CXXFLAGS += -O2 -Wall -I. -fPIC
++CXXFLAGS += -Wall -I. -fPIC
+ LDLFAGS +=
+ LDLIBS +=
+ 
+@@ -45,14 +45,15 @@
+ 
+ 
+ $(ZITA-ALSA-PCMI_MIN): $(ZITA-ALSA-PCMI_O)
+-	g++ -shared $(LDFLAGS) -Wl,-soname,$(ZITA-ALSA-PCMI_MAJ) -o $(ZITA-ALSA-PCMI_MIN) $(ZITA-ALSA-PCMI_O) $(ZITA-ALSA-PCMI_DEP)
++	$(CXX) -shared $(LDFLAGS) -Wl,-soname,$(ZITA-ALSA-PCMI_MAJ) -o $(ZITA-ALSA-PCMI_MIN) $(ZITA-ALSA-PCMI_O) $(ZITA-ALSA-PCMI_DEP)
+ 
+ 
+ install:	$(ZITA-ALSA-PCMI_MIN)
+ 	install -Dm 644 $(ZITA-ALSA-PCMI_H)   $(DESTDIR)$(PREFIX)/include/$(ZITA-ALSA-PCMI_H)
+ 	install -Dm 644 $(ZITA-ALSA-PCMI_MIN) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(ZITA-ALSA-PCMI_MIN)
+-	ln -sf $(ZITA-ALSA-PCMI_MIN) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(ZITA-ALSA-PCMI_SO)
+-	ldconfig
++	/usr/sbin/ldconfig -n $(DESTDIR)/$(LIBDIR)
++	ln -sf $(ZITA-ALSA-PCMI_MIN) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(ZITA-ALSA-PCMI_MAJ)
++	ln -sf $(ZITA-ALSA-PCMI_MAJ) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(ZITA-ALSA-PCMI_SO)
+ 
+ uninstall:
+ 	rm -rf $(DESTDIR)$(PREFIX)/include/zita-alsa-pcmi.h
