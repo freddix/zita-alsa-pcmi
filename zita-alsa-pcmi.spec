@@ -1,10 +1,11 @@
 Summary:	Library providing easy access to ALSA PCM devices
+
 Name:		zita-alsa-pcmi
 Version:	0.2.0
-Release:	2
+Release:	3
 License:	LGPL
 Group:		Libraries
-Source0:	http://www.kokkinizita.net/linuxaudio/downloads/%{name}-%{version}.tar.bz2
+Source0:	http://kokkinizita.linuxaudio.org/linuxaudio/downloads/%{name}-%{version}.tar.bz2
 # Source0-md5:	caffc4f9bb0872e8e431581472891522
 BuildRequires:	alsa-lib-devel
 BuildRequires:	libstdc++-devel
